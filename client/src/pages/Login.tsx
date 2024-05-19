@@ -1,12 +1,12 @@
 import React from "react";
 import "../App.css";
 
-function Register() {
+function Login() {
   return (
-    <div className="register">
+    <div className="login">
       <div className="box">
         <form>
-          <h1>Register</h1>
+          <h1>Login</h1>
           <div>
             <input type="text" placeholder="Username" required className="input" />
           </div>
@@ -20,4 +20,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;

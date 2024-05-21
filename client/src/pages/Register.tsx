@@ -1,17 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import "../App.css";
 
 function Register() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function registerUser(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await axios.post("/register", { username, password });
+  }
+
   return (
     <div className="register">
       <div className="box">
-        <form>
+        <form onSubmit={registerUser}>
           <h1>Register</h1>
           <div>
-            <input type="text" placeholder="Username" required className="input" />
+            <input
+              value={username}
+              type="text"
+              placeholder="Username"
+              required
+              className="input"
+              onChange={(event) => setUsername(event.target.value)}
+            />
           </div>
           <div>
-            <input type="password" placeholder="Password" required className="input" />
+            <input
+              value={password}
+              type="password"
+              placeholder="Password"
+              required
+              className="input"
+              onChange={(event) => setPassword(event.target.value)}
+            />
           </div>
           <input type="submit" className="button" />
         </form>

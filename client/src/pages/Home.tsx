@@ -1,66 +1,46 @@
-import React, { useState } from "react";
-import "../App.css";
-
-const users = ["Alice", "Bob", "Charlie", "David"];
-const messages = {
-  Alice: [
-    { user: "Alice", text: "Hello everyone!" },
-    { user: "You", text: "Hi Alice!" },
-  ],
-  Bob: [
-    { user: "Bob", text: "Hey there!" },
-    { user: "You", text: "Hi Bob!" },
-  ],
-  Charlie: [
-    { user: "Charlie", text: "Good morning!" },
-    { user: "You", text: "Morning Charlie!" },
-  ],
-  David: [
-    { user: "David", text: "How's it going?" },
-    { user: "You", text: "Great David, you?" },
-  ],
-};
+import { useEffect, useState } from "react";
 
 function Home() {
-  const [selectedUser, setSelectedUser] = useState(users[0]);
-  const [newMessage, setNewMessage] = useState("");
+  const [ws, setWs] = useState<null | WebSocket>(null);
+  const [onlinePeople, setOnlinePeople] = useState<any>({});
 
-  const handleUserClick = (user: string) => {
-    setSelectedUser(user);
-  };
+  useEffect(() => {
+    const websocket = new WebSocket("ws://localhost:4000");
+    setWs(websocket);
+    websocket.addEventListener("message", handleMessage);
+  }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewMessage(e.target.value);
-  };
+  function showOnlinePeople(peopleArr: any[]) {
+    const people: any = {};
+    peopleArr.forEach(({ userId, username }: any) => {
+      people[userId] = username;
+    });
+    setOnlinePeople(people);
+  }
+
+  function handleMessage(event: any) {
+    const messageData = JSON.parse(event.data);
+    if ("online" in messageData) {
+      showOnlinePeople(messageData.online);
+    }
+  }
 
   return (
     <div className="home">
-      <div className="chatContainer">
-        <div className="userList">
+      <div className="container">
+        <div className="list">
           <h2>Users</h2>
-          <ul>
-            {users.map((user, index) => (
-              <li
-                key={index}
-                className={selectedUser === user ? "selectedUser" : ""}
-                onClick={() => handleUserClick(user)}
-              >
-                {user}
-              </li>
-            ))}
-          </ul>
+          {Object.keys(onlinePeople).map((userId) => (
+            <div key={userId}>{onlinePeople[userId]}</div>
+          ))}
         </div>
-        <div className="chatBox">
-          <div className="chatLog">
-            {messages.Alice.map((message, index) => (
-              <div key={index} className="message">
-                <strong>{message.user}:</strong> {message.text}
-              </div>
-            ))}
+        <div className="right">
+          <div className="log">
+            <p>message...</p>
           </div>
-          <div className="chatInput">
-            <input type="text" placeholder="Type a message..." value={newMessage} onChange={handleInputChange} />
-            <button>Send</button>
+          <div className="box">
+            <input type="text" placeholder="Type a message..." className="input" />
+            <button className="send">Send</button>
           </div>
         </div>
       </div>

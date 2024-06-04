@@ -10,7 +10,7 @@ function App() {
   const { username, id } = useContext(UserContext);
 
   if (username) {
-    return <h1>Logged In {username}</h1>;
+    return <Home />;
   }
 
   return <Register />;

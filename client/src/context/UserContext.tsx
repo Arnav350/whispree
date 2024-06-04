@@ -1,4 +1,5 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useState } from "react";
+import axios from "axios";
+import { Dispatch, ReactNode, SetStateAction, createContext, useEffect, useState } from "react";
 
 interface IProviderChildren {
   children: ReactNode;
@@ -16,6 +17,13 @@ export const UserContext = createContext<IUserContext>({} as IUserContext);
 export function UserContextProvider({ children }: IProviderChildren) {
   const [username, setUsername] = useState<string | null>(null);
   const [id, setId] = useState<string | null>(null);
+
+  useEffect(() => {
+    axios.get("/profile").then((res) => {
+      setId(res.data.userId);
+      setUsername(res.data.username);
+    });
+  }, []);
 
   return <UserContext.Provider value={{ username, setUsername, id, setId }}>{children}</UserContext.Provider>;
 }

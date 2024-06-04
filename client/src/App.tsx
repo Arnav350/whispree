@@ -7,7 +7,12 @@ import Home from "./pages/Home";
 function App() {
   axios.defaults.baseURL = "http://localhost:4000";
   axios.defaults.withCredentials = true;
-  const { username } = useContext(UserContext);
+  const { username, id } = useContext(UserContext);
+
+  if (username) {
+    return <h1>Logged In {username}</h1>;
+  }
+
   return <Register />;
 }
 

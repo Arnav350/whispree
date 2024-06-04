@@ -4,13 +4,15 @@ import "../App.css";
 import { UserContext } from "../context/UserContext";
 
 function Register() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [registerPage, setRegisterPage] = useState<boolean>(true);
   const { setUsername: setRegisteredUsername, setId } = useContext(UserContext);
 
-  async function registerUser(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const { data } = await axios.post("/register", { username, password });
+    const url = registerPage ? "/register" : "/login";
+    const { data } = await axios.post(url, { username, password });
     setRegisteredUsername(username);
     setId(data.id);
   }
@@ -18,8 +20,8 @@ function Register() {
   return (
     <div className="register">
       <div className="box">
-        <form onSubmit={registerUser}>
-          <h1>Register</h1>
+        <form onSubmit={handleSubmit}>
+          {registerPage ? <h1>Register</h1> : <h1>Login</h1>}
           <div>
             <input
               value={username}
@@ -42,6 +44,21 @@ function Register() {
           </div>
           <input type="submit" className="button" />
         </form>
+        {registerPage ? (
+          <p className="bottom">
+            Already have an account?{" "}
+            <button className="here" onClick={() => setRegisterPage(false)}>
+              Login here
+            </button>
+          </p>
+        ) : (
+          <p className="bottom">
+            Don't have an account?{" "}
+            <button className="here" onClick={() => setRegisterPage(true)}>
+              Register here
+            </button>
+          </p>
+        )}
       </div>
     </div>
   );

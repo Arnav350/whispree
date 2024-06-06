@@ -127,8 +127,24 @@
 
 .home .log {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   margin-bottom: 20px;
+}
+
+.home .message {
+  align-self: flex-start;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+  background-color: var(--border);
+  border-radius: 8px;
+}
+
+.home .my {
+  align-self: flex-end;
+  background-color: var(--primary);
+  color: var(--white);
 }
 
 .home .box {

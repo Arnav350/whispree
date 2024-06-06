@@ -87,10 +87,34 @@
   height: 80%;
 }
 
-.home .list {
+.home .users {
+  padding-right: 20px;
   width: 25%;
   border-right: 1px solid var(--border);
-  padding-right: 20px;
+}
+
+.home .user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.home .avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  width: 32px;
+  background-color: var(--primary);
+  border-radius: 50%;
+}
+
+.home .selected {
+  font-weight: 600;
 }
 
 .home .right {

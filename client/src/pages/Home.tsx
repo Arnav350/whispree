@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../context/UserContext";
 
 function Home() {
+  const { id } = useContext(UserContext);
+
   const [ws, setWs] = useState<null | WebSocket>(null);
   const [onlinePeople, setOnlinePeople] = useState<any>({});
+  const [selectedUserId, setSelectedUserId] = useState<null | string>(null);
 
   useEffect(() => {
     const websocket = new WebSocket("ws://localhost:4000");
@@ -28,16 +32,19 @@ function Home() {
   return (
     <div className="home">
       <div className="container">
-        <div className="list">
+        <div className="users">
           <h2>Users</h2>
-          {Object.keys(onlinePeople).map((userId) => (
-            <div key={userId}>{onlinePeople[userId]}</div>
-          ))}
+          {Object.keys(onlinePeople)
+            .filter((userId) => userId !== id)
+            .map((userId) => (
+              <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
+                <div className="avatar">{onlinePeople[userId][0].toUpperCase()}</div>
+                <p className={userId === selectedUserId ? "selected" : ""}>{onlinePeople[userId]}</p>
+              </div>
+            ))}
         </div>
         <div className="right">
-          <div className="log">
-            <p>message...</p>
-          </div>
+          <div className="log">{!selectedUserId && <p>Select a user</p>}</div>
           <div className="box">
             <input type="text" placeholder="Type a message..." className="input" />
             <button className="send">Send</button>

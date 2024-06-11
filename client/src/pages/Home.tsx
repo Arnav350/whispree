@@ -1,8 +1,11 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { UserContext } from "../context/UserContext";
+import axios from "axios";
 
 function Home() {
   const { id } = useContext(UserContext);
+
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const [ws, setWs] = useState<null | WebSocket>(null);
   const [onlinePeople, setOnlinePeople] = useState<any>({});
@@ -11,15 +14,28 @@ function Home() {
   const [messages, setMessages] = useState<any[]>([]);
 
   const uniqueMessages = useMemo(
-    () => Array.from(new Map(messages.map((message) => [message.id, message])).values()),
+    () => Array.from(new Map(messages.map((message) => [message._id, message])).values()),
     [messages]
   );
 
-  useEffect(() => {
+  function websocketConnect() {
     const websocket = new WebSocket("ws://localhost:4000");
     setWs(websocket);
     websocket.addEventListener("message", handleMessage);
+    websocket.addEventListener("close", () => setTimeout(() => websocketConnect(), 200));
+  }
+
+  useEffect(() => {
+    websocketConnect();
   }, []);
+
+  useEffect(() => {
+    if (selectedUserId) {
+      axios.get("/messages/" + selectedUserId).then((res) => {
+        setMessages(res.data);
+      });
+    }
+  }, [selectedUserId]);
 
   function showOnlinePeople(peopleArr: any[]) {
     const people: any = {};
@@ -35,19 +51,30 @@ function Home() {
       showOnlinePeople(messageData.online);
     } else if ("text" in messageData) {
       setMessages((prev) => [...prev, { ...messageData }]);
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
   }
 
   function sendMessage(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (newMessage.trim() === "") {
+      return;
+    }
+
     ws?.send(
       JSON.stringify({
         recipient: selectedUserId,
         text: newMessage,
       })
     );
-    setMessages((prev) => [...prev, { text: newMessage, sender: id, recipient: selectedUserId, id: Date.now() }]);
+    setMessages((prev) => [...prev, { text: newMessage, sender: id, recipient: selectedUserId, _id: Date.now() }]);
     setNewMessage("");
+
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   }
 
   return (
@@ -67,11 +94,12 @@ function Home() {
         {selectedUserId ? (
           <div className="right">
             <div className="log">
-              {uniqueMessages.map((message, i) => (
-                <div key={i} className={"message" + (message.sender === id ? " my" : "")}>
+              {uniqueMessages.map((message) => (
+                <div key={message._id} className={"message" + (message.sender === id ? " my" : "")}>
                   {message.text}
                 </div>
               ))}
+              <div ref={bottomRef}></div>
             </div>
             <form className="box" onSubmit={sendMessage}>
               <input

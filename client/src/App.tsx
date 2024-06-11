@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 function App() {
   axios.defaults.baseURL = "http://localhost:4000";
   axios.defaults.withCredentials = true;
-  const { username, id } = useContext(UserContext);
+  const { username } = useContext(UserContext);
 
   if (username) {
     return <Home />;

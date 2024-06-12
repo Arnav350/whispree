@@ -101,6 +101,10 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post("/logout", async (req, res) => {
+  res.cookie("token", "", { sameSite: "none", secure: true }).json("ok");
+});
+
 const server = app.listen(4000);
 
 const wss = new ws.WebSocketServer({ server });
@@ -119,6 +123,7 @@ wss.on("connection", (connection, req) => {
     connection.ping();
     connection.deathTimer = setTimeout(() => {
       connection.isAlive = false;
+      clearInterval(connection.timer);
       connection.terminate();
       notifyPeople();
     }, 1000);

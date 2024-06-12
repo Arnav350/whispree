@@ -3,7 +3,7 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 
 function Home() {
-  const { id } = useContext(UserContext);
+  const { username, setUsername, id, setId } = useContext(UserContext);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -51,15 +51,20 @@ function Home() {
     });
   }, [onlinePeople]);
 
-  console.log(offlinePeople);
-  console.log(onlinePeople);
-
   function showOnlinePeople(peopleArr: any[]) {
     const people: any = {};
     peopleArr.forEach(({ userId, username }: any) => {
       people[userId] = username;
     });
     setOnlinePeople(people);
+  }
+
+  function logout() {
+    axios.post("/logout").then(() => {
+      setWs(null);
+      setId(null);
+      setUsername(null);
+    });
   }
 
   function handleMessage(event: MessageEvent<any>) {
@@ -94,28 +99,41 @@ function Home() {
     }, 100);
   }
 
+  function sendFile(event: any) {
+    const file = event.target.files[0];
+    axios.post("/message");
+  }
+
   return (
     <div className="home">
       <div className="container">
-        <div className="users">
-          <h2>Users</h2>
-          {Object.keys(onlinePeople)
-            .filter((userId) => userId !== id)
-            .map((userId) => (
-              <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
-                <div className="avatar">
-                  {onlinePeople[userId][0].toUpperCase()}
-                  <div className="online"></div>
+        <div className="left">
+          <div className="users">
+            <h2>Users</h2>
+            {Object.keys(onlinePeople)
+              .filter((userId) => userId !== id)
+              .map((userId) => (
+                <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
+                  <div className="avatar">
+                    {onlinePeople[userId][0].toUpperCase()}
+                    <div className="online"></div>
+                  </div>
+                  <p className={userId === selectedUserId ? "selected" : ""}>{onlinePeople[userId]}</p>
                 </div>
-                <p className={userId === selectedUserId ? "selected" : ""}>{onlinePeople[userId]}</p>
+              ))}
+            {Object.keys(offlinePeople).map((userId) => (
+              <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
+                <div className="avatar">{offlinePeople[userId][0].toUpperCase()}</div>
+                <p className={userId === selectedUserId ? "selected" : ""}>{offlinePeople[userId]}</p>
               </div>
             ))}
-          {Object.keys(offlinePeople).map((userId) => (
-            <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
-              <div className="avatar">{offlinePeople[userId][0].toUpperCase()}</div>
-              <p className={userId === selectedUserId ? "selected" : ""}>{offlinePeople[userId]}</p>
-            </div>
-          ))}
+          </div>
+          <div className="bottom">
+            <h4 className="username">{username}</h4>
+            <button className="logout" onClick={logout}>
+              logout
+            </button>
+          </div>
         </div>
         {selectedUserId ? (
           <div className="right">
@@ -135,6 +153,10 @@ function Home() {
                 className="input"
                 onChange={(event) => setNewMessage(event.target.value)}
               />
+              <label className="file">
+                <input type="file" className="choose" onChange={sendFile} />
+                File
+              </label>
               <button type="submit" className="send">
                 Send
               </button>

@@ -87,10 +87,42 @@
   height: 80%;
 }
 
-.home .users {
+.home .left {
+  display: flex;
+  flex-direction: column;
   padding-right: 20px;
   width: 25%;
   border-right: 1px solid var(--border);
+}
+
+.home .users {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.home .bottom {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 16px;
+}
+
+.home .username {
+  font-weight: 400;
+}
+
+.home .logout {
+  padding: 6px 12px;
+  background-color: var(--primary);
+  border-radius: 6px;
+  color: var(--white);
+  cursor: pointer;
+  transition: background-color 300ms;
+}
+
+.home .logout:hover {
+  background-color: var(--secondary);
 }
 
 .home .user {
@@ -172,12 +204,28 @@
   font-size: 16px;
 }
 
+.home .file {
+  padding: 10px;
+  background: var(--primary);
+  border-radius: 8px;
+  color: var(--white);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.home .file:hover {
+  background: var(--secondary);
+}
+
+.home .choose {
+  display: none;
+}
+
 .home .send {
   padding: 10px 20px;
   background: var(--primary);
   border-radius: 8px;
   color: var(--white);
-  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
 }

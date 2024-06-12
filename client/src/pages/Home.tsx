@@ -9,6 +9,7 @@ function Home() {
 
   const [ws, setWs] = useState<null | WebSocket>(null);
   const [onlinePeople, setOnlinePeople] = useState<any>({});
+  const [offlinePeople, setOfflinePeople] = useState<any>({});
   const [selectedUserId, setSelectedUserId] = useState<null | string>(null);
   const [newMessage, setNewMessage] = useState<string>("");
   const [messages, setMessages] = useState<any[]>([]);
@@ -36,6 +37,22 @@ function Home() {
       });
     }
   }, [selectedUserId]);
+
+  useEffect(() => {
+    axios.get("/people").then((res) => {
+      const peopleArr = res.data
+        .filter((person: any) => person._id !== id)
+        .filter((person: any) => !Object.keys(onlinePeople).includes(person._id));
+      const people: any = {};
+      peopleArr.forEach(({ _id, username }: any) => {
+        people[_id] = username;
+      });
+      setOfflinePeople(people);
+    });
+  }, [onlinePeople]);
+
+  console.log(offlinePeople);
+  console.log(onlinePeople);
 
   function showOnlinePeople(peopleArr: any[]) {
     const people: any = {};
@@ -86,10 +103,19 @@ function Home() {
             .filter((userId) => userId !== id)
             .map((userId) => (
               <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
-                <div className="avatar">{onlinePeople[userId][0].toUpperCase()}</div>
+                <div className="avatar">
+                  {onlinePeople[userId][0].toUpperCase()}
+                  <div className="online"></div>
+                </div>
                 <p className={userId === selectedUserId ? "selected" : ""}>{onlinePeople[userId]}</p>
               </div>
             ))}
+          {Object.keys(offlinePeople).map((userId) => (
+            <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
+              <div className="avatar">{offlinePeople[userId][0].toUpperCase()}</div>
+              <p className={userId === selectedUserId ? "selected" : ""}>{offlinePeople[userId]}</p>
+            </div>
+          ))}
         </div>
         {selectedUserId ? (
           <div className="right">

@@ -104,12 +104,23 @@
 }
 
 .home .avatar {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 32px;
   width: 32px;
   background-color: var(--primary);
+  border-radius: 50%;
+}
+
+.home .online {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  width: 8px;
+  background-color: #0e0;
   border-radius: 50%;
 }
 

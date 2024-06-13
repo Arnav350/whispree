@@ -190,6 +190,14 @@
   color: var(--white);
 }
 
+.home .underline {
+  color: #000;
+}
+
+.home .my .underline {
+  color: var(--white);
+}
+
 .home .box {
   display: flex;
   align-items: center;

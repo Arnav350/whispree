@@ -72,16 +72,20 @@ function Home() {
     if ("online" in messageData) {
       showOnlinePeople(messageData.online);
     } else if ("text" in messageData) {
-      setMessages((prev) => [...prev, { ...messageData }]);
-      setTimeout(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+      if (messageData.sender === selectedUserId) {
+        setMessages((prev) => [...prev, { ...messageData }]);
+        setTimeout(() => {
+          bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
     }
   }
 
-  function sendMessage(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (newMessage.trim() === "") {
+  function sendMessage(event: React.FormEvent<HTMLFormElement> | null, file: any = null) {
+    if (event) {
+      event.preventDefault();
+    }
+    if (newMessage.trim() === "" && file == null) {
       return;
     }
 
@@ -89,10 +93,18 @@ function Home() {
       JSON.stringify({
         recipient: selectedUserId,
         text: newMessage,
+        file,
       })
     );
-    setMessages((prev) => [...prev, { text: newMessage, sender: id, recipient: selectedUserId, _id: Date.now() }]);
-    setNewMessage("");
+
+    if (file) {
+      axios.get("/messages/" + selectedUserId).then((res) => {
+        setMessages(res.data);
+      });
+    } else {
+      setMessages((prev) => [...prev, { text: newMessage, sender: id, recipient: selectedUserId, _id: Date.now() }]);
+      setNewMessage("");
+    }
 
     setTimeout(() => {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -101,7 +113,14 @@ function Home() {
 
   function sendFile(event: any) {
     const file = event.target.files[0];
-    axios.post("/message");
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      sendMessage(null, {
+        name: file.name,
+        data: reader.result,
+      });
+    };
   }
 
   return (
@@ -141,6 +160,11 @@ function Home() {
               {uniqueMessages.map((message) => (
                 <div key={message._id} className={"message" + (message.sender === id ? " my" : "")}>
                   {message.text}
+                  {message.file && (
+                    <a target="_blank" href={axios.defaults.baseURL + "/uploads/" + message.file} className="underline">
+                      {message.file}
+                    </a>
+                  )}
                 </div>
               ))}
               <div ref={bottomRef}></div>

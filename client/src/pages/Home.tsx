@@ -28,6 +28,7 @@ function Home() {
 
   useEffect(() => {
     websocketConnect();
+    console.log("test");
   }, []);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ function Home() {
       });
       setOfflinePeople(people);
     });
-  }, [onlinePeople]);
+  }, [onlinePeople, id]);
 
   function showOnlinePeople(peopleArr: any[]) {
     const people: any = {};
@@ -161,7 +162,12 @@ function Home() {
                 <div key={message._id} className={"message" + (message.sender === id ? " my" : "")}>
                   {message.text}
                   {message.file && (
-                    <a target="_blank" href={axios.defaults.baseURL + "/uploads/" + message.file} className="underline">
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      href={axios.defaults.baseURL + "/uploads/" + message.file}
+                      className="underline"
+                    >
                       {message.file}
                     </a>
                   )}

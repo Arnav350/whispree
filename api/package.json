@@ -9,5 +9,8 @@
     "mongodb": "^6.6.2",
     "mongoose": "^8.4.0",
     "ws": "^8.17.0"
+  },
+  "scripts": {
+    "start": "nodemon index.js"
   }
 }

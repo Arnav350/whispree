@@ -28,7 +28,6 @@ function Home() {
 
   useEffect(() => {
     websocketConnect();
-    console.log("test");
   }, []);
 
   useEffect(() => {

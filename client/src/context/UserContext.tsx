@@ -19,10 +19,14 @@ export function UserContextProvider({ children }: IProviderChildren) {
   const [id, setId] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get("/profile").then((res) => {
-      setId(res.data.userId);
-      setUsername(res.data.username);
-    });
+    const token = document.cookie.split("; ").find((row) => row.startsWith("token="));
+
+    if (token) {
+      axios.get("/profile").then((res) => {
+        setId(res.data.userId);
+        setUsername(res.data.username);
+      });
+    }
   }, []);
 
   return <UserContext.Provider value={{ username, setUsername, id, setId }}>{children}</UserContext.Provider>;

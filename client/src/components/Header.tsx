@@ -1,13 +1,22 @@
-import { useContext } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import axios from "axios";
 import AP from "../assets/ap.png";
 
 interface IProps {
-  logout: () => void;
+  setWs: Dispatch<SetStateAction<null | WebSocket>>;
 }
 
-function Header({ logout }: IProps) {
-  const { username } = useContext(UserContext);
+function Header({ setWs }: IProps) {
+  const { username, setUsername, setId } = useContext(UserContext);
+
+  function logout() {
+    axios.post("/logout").then(() => {
+      setWs(null);
+      setId(null);
+      setUsername(null);
+    });
+  }
 
   return (
     <div className="header">

@@ -1,25 +1,20 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+import Chat from "../components/Chat";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
 
 function Home() {
-  const { username, setUsername, id, setId } = useContext(UserContext);
+  const { id } = useContext(UserContext);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const [ws, setWs] = useState<null | WebSocket>(null);
+  const [ws, setWs] = useState<WebSocket | null>(null);
   const [onlinePeople, setOnlinePeople] = useState<any>({});
   const [offlinePeople, setOfflinePeople] = useState<any>({});
-  const [selectedUserId, setSelectedUserId] = useState<null | string>(null);
-  const [newMessage, setNewMessage] = useState<string>("");
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
-
-  const uniqueMessages = useMemo(
-    () => Array.from(new Map(messages.map((message) => [message._id, message])).values()),
-    [messages]
-  );
 
   function websocketConnect() {
     const websocket = new WebSocket("ws://localhost:4000");
@@ -30,14 +25,6 @@ function Home() {
 
   useEffect(() => {
     websocketConnect();
-  }, [selectedUserId]);
-
-  useEffect(() => {
-    if (selectedUserId) {
-      axios.get("/messages/" + selectedUserId).then((res) => {
-        setMessages(res.data);
-      });
-    }
   }, [selectedUserId]);
 
   useEffect(() => {
@@ -61,14 +48,6 @@ function Home() {
     setOnlinePeople(people);
   }
 
-  function logout() {
-    axios.post("/logout").then(() => {
-      setWs(null);
-      setId(null);
-      setUsername(null);
-    });
-  }
-
   function handleMessage(event: MessageEvent<any>) {
     const messageData = JSON.parse(event.data);
     if ("online" in messageData) {
@@ -83,52 +62,10 @@ function Home() {
     }
   }
 
-  function sendMessage(event: React.FormEvent<HTMLFormElement> | null, file: any = null) {
-    if (event) {
-      event.preventDefault();
-    }
-    if (newMessage.trim() === "" && file == null) {
-      return;
-    }
-
-    ws?.send(
-      JSON.stringify({
-        recipient: selectedUserId,
-        text: newMessage,
-        file,
-      })
-    );
-
-    if (file) {
-      axios.get("/messages/" + selectedUserId).then((res) => {
-        setMessages(res.data);
-      });
-    } else {
-      setMessages((prev) => [...prev, { text: newMessage, sender: id, recipient: selectedUserId, _id: Date.now() }]);
-      setNewMessage("");
-    }
-
-    setTimeout(() => {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  }
-
-  function sendFile(event: any) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      sendMessage(null, {
-        name: file.name,
-        data: reader.result,
-      });
-    };
-  }
-
   return (
     <div className="home">
       <div className="container">
-        <Header logout={logout} />
+        <Header setWs={setWs} />
         <div className="main">
           <Sidebar
             onlinePeople={onlinePeople}
@@ -136,6 +73,19 @@ function Home() {
             selectedUserId={selectedUserId}
             setSelectedUserId={setSelectedUserId}
           />
+          {selectedUserId ? (
+            <Chat
+              ws={ws}
+              selectedUserId={selectedUserId}
+              messages={messages}
+              setMessages={setMessages}
+              bottomRef={bottomRef}
+            />
+          ) : (
+            <div className="chat">
+              <p>Select a user</p>
+            </div>
+          )}
         </div>
         {/* <div className="left">
           <div className="users">

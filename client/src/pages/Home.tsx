@@ -1,4 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
 
@@ -28,7 +30,7 @@ function Home() {
 
   useEffect(() => {
     websocketConnect();
-  }, []);
+  }, [selectedUserId]);
 
   useEffect(() => {
     if (selectedUserId) {
@@ -126,7 +128,16 @@ function Home() {
   return (
     <div className="home">
       <div className="container">
-        <div className="left">
+        <Header logout={logout} />
+        <div className="main">
+          <Sidebar
+            onlinePeople={onlinePeople}
+            offlinePeople={offlinePeople}
+            selectedUserId={selectedUserId}
+            setSelectedUserId={setSelectedUserId}
+          />
+        </div>
+        {/* <div className="left">
           <div className="users">
             <h2>Users</h2>
             {Object.keys(onlinePeople)
@@ -195,7 +206,7 @@ function Home() {
           <div className="right">
             <p>Select a user</p>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

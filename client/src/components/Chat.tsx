@@ -89,18 +89,19 @@ function Chat({ ws, selectedUserId, messages, setMessages, bottomRef }: IProps) 
         ))}
         <div ref={bottomRef}></div>
       </div>
-      <form className="box" onSubmit={sendMessage}>
-        <input
-          value={newMessage}
-          type="text"
-          placeholder="Type a message..."
-          className="input"
-          onChange={(event) => setNewMessage(event.target.value)}
-        />
-        <label className="file">
-          <input type="file" className="choose" onChange={sendFile} />
-          File
-        </label>
+      <form className="new" onSubmit={sendMessage}>
+        <div className="box">
+          <label className="file">
+            <input type="file" className="choose" onChange={sendFile} />+
+          </label>
+          <input
+            value={newMessage}
+            type="text"
+            placeholder="Type a message..."
+            className="input"
+            onChange={(event) => setNewMessage(event.target.value)}
+          />
+        </div>
         <button type="submit" className="send">
           Send
         </button>

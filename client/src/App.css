@@ -48,7 +48,7 @@
   color: var(--white);
   font-size: 18px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 300ms;
 }
 
 .register .button:hover {
@@ -425,4 +425,53 @@
 
 .chat .my .underline {
   color: var(--white);
+}
+
+.chat .new {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px;
+}
+
+.chat .box {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  background: var(--white);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.chat .file {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 28px;
+  width: 28px;
+  background-color: var(--primary);
+  border-radius: 4px;
+  color: var(--white);
+  font-size: 28px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 300ms;
+}
+
+.chat .choose {
+  display: none;
+}
+
+.chat .send {
+  padding: 8px 24px;
+  background-color: var(--primary);
+  border-radius: 6px;
+  color: var(--white);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 300ms;
+}
+
+.chat .send:hover {
+  background-color: var(--secondary);
 }

@@ -16,16 +16,21 @@
   text-align: center;
 }
 
+.register form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
 .register h1 {
   font-size: 30px;
   color: #333;
 }
 
-.register form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+.register .error {
+  color: #f00;
+  font-size: 14px;
 }
 
 .register .input {
@@ -33,7 +38,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 16px;
-  transition: border 0.3s;
+  transition: border 300ms;
 }
 
 .register .input:focus {
@@ -90,164 +95,6 @@
   display: flex;
   height: calc(100% - 80px);
 }
-
-/* .home .left {
-  display: flex;
-  flex-direction: column;
-  padding-right: 20px;
-  width: 25%;
-  border-right: 1px solid var(--border);
-}
-
-.home .users {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.home .bottom {
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  gap: 16px;
-}
-
-.home .username {
-  font-weight: 400;
-}
-
-.home .logout {
-  padding: 6px 12px;
-  background-color: var(--primary);
-  border-radius: 6px;
-  color: var(--white);
-  cursor: pointer;
-  transition: background-color 300ms;
-}
-
-.home .logout:hover {
-  background-color: var(--secondary);
-}
-
-.home .user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  padding: 8px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-}
-
-.home .avatar {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 32px;
-  width: 32px;
-  background-color: var(--primary);
-  border-radius: 50%;
-}
-
-.home .online {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  height: 8px;
-  width: 8px;
-  background-color: #0e0;
-  border-radius: 50%;
-}
-
-.home .selected {
-  font-weight: 600;
-}
-
-.home .right {
-  width: 75%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding-left: 20px;
-}
-
-.home .log {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  margin-bottom: 20px;
-}
-
-.home .message {
-  align-self: flex-start;
-  margin-bottom: 4px;
-  padding: 6px 12px;
-  background-color: var(--border);
-  border-radius: 12px;
-  border-bottom-left-radius: 0;
-}
-
-.home .my {
-  align-self: flex-end;
-  background-color: var(--primary);
-  color: var(--white);
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 0;
-}
-
-.home .underline {
-  color: #000;
-}
-
-.home .my .underline {
-  color: var(--white);
-}
-
-.home .box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.home .input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-.home .file {
-  padding: 10px;
-  background: var(--primary);
-  border-radius: 8px;
-  color: var(--white);
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.home .file:hover {
-  background: var(--secondary);
-}
-
-.home .choose {
-  display: none;
-}
-
-.home .send {
-  padding: 10px 20px;
-  background: var(--primary);
-  border-radius: 8px;
-  color: var(--white);
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.home .send:hover {
-  background: var(--secondary);
-} */
 
 /* Header */
 
@@ -333,7 +180,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  margin: 8px;
+  margin: 4px 8px;
   padding: 16px;
   gap: 8px;
   background-color: var(--white);
@@ -374,7 +221,11 @@
   font-weight: 500;
 }
 
-.sidebar .selected {
+.sidebar .selected .name {
+  font-weight: 700;
+}
+
+.sidebar .bar {
   position: absolute;
   right: 0;
   top: 0;
@@ -386,6 +237,7 @@
 /* Chat */
 
 .chat {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -438,8 +290,8 @@
   flex: 1;
   display: flex;
   gap: 12px;
-  background: var(--white);
   padding: 8px 12px;
+  background: var(--white);
   border-radius: 6px;
 }
 
@@ -458,8 +310,16 @@
   transition: background-color 300ms;
 }
 
+.chat .file:hover {
+  background-color: var(--secondary);
+}
+
 .chat .choose {
   display: none;
+}
+
+.chat .input {
+  flex: 1;
 }
 
 .chat .send {
@@ -474,4 +334,12 @@
 
 .chat .send:hover {
   background-color: var(--secondary);
+}
+
+.chat .select {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  font-size: 22px;
+  transform: translate(-50%, -50%);
 }

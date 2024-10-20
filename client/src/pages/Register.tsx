@@ -4,17 +4,28 @@ import "../App.css";
 import { UserContext } from "../context/UserContext";
 
 function Register() {
+  const { setUsername: setRegisteredUsername, setId } = useContext(UserContext);
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [registerPage, setRegisterPage] = useState<boolean>(true);
-  const { setUsername: setRegisteredUsername, setId } = useContext(UserContext);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const url = registerPage ? "/register" : "/login";
-    const { data } = await axios.post(url, { username, password });
-    setRegisteredUsername(username);
-    setId(data.id);
+    try {
+      const { data } = await axios.post(url, { username, password });
+      setRegisteredUsername(username);
+      setId(data.id);
+      setErrorMessage("");
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        setErrorMessage(registerPage ? "Username already taken" : "Invalid username or password");
+      } else {
+        setErrorMessage("An error occurred, please try again");
+      }
+    }
   }
 
   return (
@@ -22,6 +33,7 @@ function Register() {
       <div className="box">
         <form onSubmit={handleSubmit}>
           {registerPage ? <h1>Register</h1> : <h1>Login</h1>}
+          {errorMessage && <p className="error">{errorMessage}</p>}
           <div>
             <input
               value={username}

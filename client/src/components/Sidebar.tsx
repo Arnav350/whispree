@@ -25,22 +25,30 @@ function Sidebar({ onlinePeople, offlinePeople, selectedUserId, setSelectedUserI
         .filter((userId) => userId !== id)
         .filter((userId) => onlinePeople[userId].includes(userInput))
         .map((userId) => (
-          <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
+          <div
+            key={userId}
+            className={userId === selectedUserId ? "user selected" : "user"}
+            onClick={() => setSelectedUserId(userId)}
+          >
             <div className="avatar">
               {onlinePeople[userId][0].toUpperCase()}
               <div className="online"></div>
             </div>
             <p className="name">{onlinePeople[userId]}</p>
-            {userId === selectedUserId && <div className="selected"></div>}
+            {userId === selectedUserId && <div className="bar"></div>}
           </div>
         ))}
       {Object.keys(offlinePeople)
         .filter((userId) => offlinePeople[userId].includes(userInput))
         .map((userId) => (
-          <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
+          <div
+            key={userId}
+            className={userId === selectedUserId ? "user selected" : "user"}
+            onClick={() => setSelectedUserId(userId)}
+          >
             <div className="avatar">{offlinePeople[userId][0].toUpperCase()}</div>
             <p className="name">{offlinePeople[userId]}</p>
-            {userId === selectedUserId && <div className="selected"></div>}
+            {userId === selectedUserId && <div className="bar"></div>}
           </div>
         ))}
     </div>

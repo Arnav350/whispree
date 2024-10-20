@@ -72,23 +72,31 @@ app.get("/messages/:userId", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const foundUser = await User.findOne({ username });
 
-  if (foundUser) {
-    const passOk = bcrypt.compareSync(password, foundUser.password);
-    if (passOk) {
-      jwt.sign({ userId: foundUser._id, username }, jwtSecret, {}, (err, token) => {
-        res.cookie("token", token, { sameSite: "none", secure: true }).json({
-          id: foundUser._id,
-        });
-      });
+  try {
+    const foundUser = await User.findOne({ username });
+
+    if (!foundUser || !bcrypt.compareSync(password, foundUser.password)) {
+      return res.status(400).json("invalid credentials");
     }
+
+    jwt.sign({ userId: foundUser._id, username }, jwtSecret, {}, (err, token) => {
+      res.cookie("token", token, { sameSite: "none", secure: true }).json({
+        id: foundUser._id,
+      });
+    });
+  } catch (err) {
+    if (err) throw err;
+    res.status(500).json("error");
   }
 });
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   try {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) return res.status(400).json("user exists");
+
     const hashedPass = bcrypt.hashSync(password, bcryptSalt);
     const createdUser = await User.create({ username, password: hashedPass });
     jwt.sign({ userId: createdUser._id, username }, jwtSecret, {}, (err, token) => {

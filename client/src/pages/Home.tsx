@@ -83,80 +83,10 @@ function Home() {
             />
           ) : (
             <div className="chat">
-              <p>Select a user</p>
+              <p className="select">Select a user</p>
             </div>
           )}
         </div>
-        {/* <div className="left">
-          <div className="users">
-            <h2>Users</h2>
-            {Object.keys(onlinePeople)
-              .filter((userId) => userId !== id)
-              .map((userId) => (
-                <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
-                  <div className="avatar">
-                    {onlinePeople[userId][0].toUpperCase()}
-                    <div className="online"></div>
-                  </div>
-                  <p className={userId === selectedUserId ? "selected" : ""}>{onlinePeople[userId]}</p>
-                </div>
-              ))}
-            {Object.keys(offlinePeople).map((userId) => (
-              <div key={userId} className="user" onClick={() => setSelectedUserId(userId)}>
-                <div className="avatar">{offlinePeople[userId][0].toUpperCase()}</div>
-                <p className={userId === selectedUserId ? "selected" : ""}>{offlinePeople[userId]}</p>
-              </div>
-            ))}
-          </div>
-          <div className="bottom">
-            <h4 className="username">{username}</h4>
-            <button className="logout" onClick={logout}>
-              logout
-            </button>
-          </div>
-        </div>
-        {selectedUserId ? (
-          <div className="right">
-            <div className="log">
-              {uniqueMessages.map((message) => (
-                <div key={message._id} className={"message" + (message.sender === id ? " my" : "")}>
-                  {message.text}
-                  {message.file && (
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      href={axios.defaults.baseURL + "/uploads/" + message.file}
-                      className="underline"
-                    >
-                      {message.file}
-                    </a>
-                  )}
-                </div>
-              ))}
-              <div ref={bottomRef}></div>
-            </div>
-            <form className="box" onSubmit={sendMessage}>
-              <input
-                value={newMessage}
-                type="text"
-                placeholder="Type a message..."
-                className="input"
-                onChange={(event) => setNewMessage(event.target.value)}
-              />
-              <label className="file">
-                <input type="file" className="choose" onChange={sendFile} />
-                File
-              </label>
-              <button type="submit" className="send">
-                Send
-              </button>
-            </form>
-          </div>
-        ) : (
-          <div className="right">
-            <p>Select a user</p>
-          </div>
-        )} */}
       </div>
     </div>
   );
